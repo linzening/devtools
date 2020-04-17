@@ -1,0 +1,24 @@
+{
+    "name": "linzening/devtools",
+    "type": "library",
+    "description": "this is a php devepment tools. like a composer.",
+    "homepage": "https://packagist.org/packages/linzening/devtools",
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "linzening",
+            "email": "linzening@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "linzening\\devtools\\": "src"
+        }
+    },
+    "suggest": {
+        "cps": "database structure"
+    }
+}
