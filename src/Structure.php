@@ -48,6 +48,7 @@ class Structure extends Controller
             $value['column'] = $tablelist[$value['TABLE_NAME']] ?? [];
             $value['id'] = $key + 1;
             if(!empty($value['column'])){
+                $value['fields'] = implode(',',array_column($tablelist[$value['TABLE_NAME']],'COLUMN_NAME'));
                 $ntables[] = $value;
             }
         }
@@ -58,11 +59,17 @@ class Structure extends Controller
                 $mark .= PHP_EOL;
                 $mark .= '**'.$table['id'].'.&nbsp;'.$table['TABLE_NAME'].'&nbsp;'.($table['TABLE_COMMENT']?:'-').'**'. PHP_EOL. PHP_EOL;
 
-                if( !empty($simple) ){
+                if( $simple == 1 ){
                     $mark .= '|  字段名  | 说明  |' . PHP_EOL;
                     $mark .= '| ------ | ------ |' . PHP_EOL;
                     foreach ($table['column'] as $key1 => $data) {
                         $mark .= '| ' . $data['COLUMN_NAME'] . ' | ' . $data['COLUMN_COMMENT'] . ' | ' . PHP_EOL;
+                    }
+                }elseif( $simple == 2 ){
+                    $mark .= '|  字段名  | 必填 | 类型 | 说明  |' . PHP_EOL;
+                    $mark .= '| ------ | --- | --- |------ |' . PHP_EOL;
+                    foreach ($table['column'] as $key1 => $data) {
+                        $mark .= '| ' . $data['COLUMN_NAME'] . ' | ' . ($data['IS_NULLABLE']=='YES'?'否':'是') . ' | ' . $data['DATA_TYPE'] . ' | ' . $data['COLUMN_COMMENT'] . ' | ' . PHP_EOL;
                     }
                 }else{
                     $mark .= '|  字段名  |  数据类型  | 字段类型 |长度|是否为空| 默认值|说明  |' . PHP_EOL;
