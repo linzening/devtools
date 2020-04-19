@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>数据表</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="/static/markdown/style.css" type="text/css" charset="UTF-8" />
+        <link rel="stylesheet" href="/static/markdown/github-markdown.css" type="text/css" charset="UTF-8" />
+        <link rel="stylesheet" href="/static/markdown/prism.css" type="text/css" charset="UTF-8" />
+        <script src="/static/markdown/prism.js" type="text/javascript" charset="UTF-8"></script>
+        <style>
+        .markdown-body{
+            max-width:92%!important;
+        }
+        </style>
+    </head>
+<body class='markdown-body'>
+
+{volist name="tables" id="v"}
+
+<p><strong>{$v.id}. {$v.TABLE_NAME} {$v.TABLE_COMMENT}</strong></p>
+<p>{$v.fields}</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>字段名</th>
+      <th>数据类型</th>
+      <th>字段类型</th>
+      <th>长度</th>
+      <th>是否为空</th>
+      <th>默认值</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+      {volist name="v.column" id="c"}
+    <tr>
+        <td>{$c.COLUMN_NAME}</td>
+        <td>{$c.COLUMN_TYPE}</td>
+        <td>{$c.DATA_TYPE}</td>
+        <td>{$c.CHARACTER_MAXIMUM_LENGTH}</td>
+        <td>{$c.IS_NULLABLE}</td>
+        <td>{$c.COLUMN_DEFAULT}</td>
+        <td>{$c.COLUMN_COMMENT}</td>
+    </tr>
+    {/volist}
+  </tbody>
+</table>
+{/volist}
+</body>
+</html>
