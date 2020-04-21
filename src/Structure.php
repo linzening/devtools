@@ -104,7 +104,7 @@ class Structure extends Controller
      * @param  [type] $key [键名]
      * @return [type]      [新的二维数组]
      */
-    public function template(){
+    public static function template(){
         return __DIR__ . '/html/structure.html';
     }
 
