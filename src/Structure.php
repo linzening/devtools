@@ -17,8 +17,7 @@ class Structure extends Controller
      * @param  [simple] 简单模式 只返回列名和注释
      * @return [type]      [新的二维数组]
      */
-    public static function all_tables($database = '', $type = 'array',$table = '', $query = '', $simple = '')
-    {
+    public static function all_tables($database = '', $type = 'array',$table = '', $query = '', $simple = ''){
         $type = $type == '' ? 'array' : $type;
         if(empty($database)){
             $database = Config::get('database.database','');
@@ -92,12 +91,21 @@ class Structure extends Controller
      * @param  [type] $key [键名]
      * @return [type]      [新的二维数组]
      */
-    public function tableinfo($table = '')
-    {
+    public function tableinfo($table = ''){
         $sql = "SELECT COLUMN_NAME,COLUMN_TYPE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,IS_NULLABLE,COLUMN_DEFAULT,COLUMN_COMMENT
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA ='' AND TABLE_NAME = '{$table}' ";
         return Db::query($sql);
+    }
+
+    /**
+     * [template 获取模板路径]
+     * @param  [type] $arr [二维数组]
+     * @param  [type] $key [键名]
+     * @return [type]      [新的二维数组]
+     */
+    public function template(){
+        return __DIR__ . '/html/structure.html';
     }
 
     /**
