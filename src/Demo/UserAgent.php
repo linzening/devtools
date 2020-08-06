@@ -6,12 +6,12 @@
 // +--------------------------------
 // | date:2019-05-09
 // +--------------------------------
-namespace linzening\devtools;
+namespace linzening\devtools\Demo;
 
 class UserAgent {
 
 	// ----------------- 平台：系统版本
-	protected $platforms = [
+	var $platforms = [
 		'windows nt 6.3'	=> 'Win8.1',
 		'windows nt 6.2'	=> 'Win8',
 		'windows nt 6.1'	=> 'Win7',
@@ -88,7 +88,7 @@ class UserAgent {
 
 
 	// ----------------- 浏览器名称
-	protected $browsers = [
+	var $browsers = [
 		'Flock'				=> 'Flock',
 		'Chimera'			=> 'Chimera',
 		'UCBrowser'			=> 'UC',
@@ -125,7 +125,7 @@ class UserAgent {
 		'Mozilla'			=> 'Mozilla',
 	];
 	// ----------------- 移动设备
-	protected $mobiles = [
+	var $mobiles = [
 		// legacy array, old values commented out
 		'mobileexplorer'	=> 'Mobile Explorer',
 		//					'openwave'			=> 'Open Wave',
@@ -216,7 +216,7 @@ class UserAgent {
 	];
 
 	// ----------------- 机器人
-	protected $robots = [
+	var $robots = [
 		'googlebot'			=> 'Googlebot',
 		'msnbot'			=> 'MSNBot',
 		'slurp'				=> 'Inktomi Slurp',
