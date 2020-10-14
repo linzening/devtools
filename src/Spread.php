@@ -15,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 class Spread
 {
     /**
-     * 样例
+     * [name] 样例
      * @access public
      * @return null
      */
@@ -30,7 +30,7 @@ class Spread
 		['majorname','专业名称']];
 		$expTableData = db("major")->select();
         $this::excelPut($Excel,$expTableData);
-        
+
         // +多个表格的excelPuts
         $fileName = "多表格导出";
 		$Excel['fileName']=$fileName.date('Y年m月d日-His',time());//or $xlsTitle
@@ -44,9 +44,9 @@ class Spread
             ['name','专业名称']
         ];
         $expTableData = db("major")->select();
-        $Excel['expTableData'] = $expTableData;	
+        $Excel['expTableData'] = $expTableData;
         $Excels[] = $Excel;
-        
+
         $fileName = "扣除的AAAA";
 		$Excel['fileName']=$fileName.date('Y年m月d日-His',time());//or $xlsTitle
 		$Excel['cellName']=['A','B','C'];
@@ -60,7 +60,7 @@ class Spread
             ['num','数量']
         ];
         $expTableData = db("deduction")->select();
-        $Excel['expTableData'] = $expTableData;	
+        $Excel['expTableData'] = $expTableData;
         $Excels[] = $Excel;
 		\linzening\devtools\Spread::excelPuts($Excels);
 	}
@@ -87,7 +87,7 @@ class Spread
 
         // ------------- 表头 -------------
         // $sheet0->setCellValue('A1',"测试表头");
-        $sheet0->setCellValue('A1',$Excel['sheetTitle'].date("YmdHis"));
+        $sheet0->setCellValue('A1',$Excel['sheetTitle']);
 
         $sheet0->getStyle('A1')->getFont()->setSize(20);
         $sheet0->getStyle('A1')->getFont()->setName('微软雅黑');
@@ -167,11 +167,9 @@ class Spread
      * @return file
      */
     public static function excelPuts($Excels){
-        // $Excel['sheetTitle']=iconv('utf-8', 'gb2312',$Excel['sheetTitle']); //解决字符编码的问题
-
         $spreadsheet = new Spreadsheet();
-        foreach ($Excels as $key => $Excel) {            
-            //  ------------- 文件参数 -------------
+        foreach ($Excels as $key => $Excel) {
+            //  ------------- 文件参数 ------------- //
             $cellName = $Excel['cellName'];
             $xlsCell = $Excel['xlsCell'];
             $cellNum = count($xlsCell);//计算总列数
@@ -185,27 +183,27 @@ class Spread
             //设置表格标题A1
             $sheet0->mergeCells('A1:'.$cellName[$cellNum-1].'1');//表头合并单元格
 
-            // ------------- 表头 -------------
-            $sheet0->setCellValue('A1',$Excel['sheetTitle'].date("YmdHis"));
+            // ------------- 表头 ------------- //
+            $sheet0->setCellValue('A1',$Excel['sheetTitle']);
 
             $sheet0->getStyle('A1')->getFont()->setSize(20);
             $sheet0->getStyle('A1')->getFont()->setName('微软雅黑');
             //设置行高和列宽
-            // ------------- 横向水平宽度 -------------
+            // ------------- 横向水平宽度 ------------- //
             if(isset($Excel['H'])){
                 foreach ($Excel['H'] as $key => $value) {
                     $sheet0->getColumnDimension($key)->setWidth($value);
                 }
             }
 
-            // ------------- 纵向垂直高度 -------------
+            // ------------- 纵向垂直高度 ------------- //
             if(isset($Excel['V'])){
                 foreach ($Excel['V'] as $key => $value) {
                     $sheet0->getRowDimension($key)->setRowHeight($value);
                 }
             }
 
-            // ------------- 第二行：表头要加粗和居中，加入颜色 -------------
+            // ------------- 第二行：表头要加粗和居中，加入颜色 ------------- //
             $sheet0->getStyle('A1')
             ->applyFromArray(['font' => ['bold' => false],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
             $setcolor = $sheet0->getStyle("A2:".$cellName[$cellNum-1]."2")->getFill();
@@ -214,7 +212,7 @@ class Spread
             $selectcolor=$colors[mt_rand(0,count($colors)-1)];//获取随机颜色
             $setcolor->getStartColor()->setRGB($selectcolor);
 
-            // ------------- 根据表格数据设置列名称 -------------
+            // ------------- 根据表格数据设置列名称 ------------- //
 
             for($i=0;$i<$cellNum;$i++){
                 $sheet0->setCellValue($cellName[$i].'2', $xlsCell[$i][1])
@@ -222,7 +220,7 @@ class Spread
                 ->applyFromArray(['font' => ['bold' => true],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
             }
 
-            // ------------- 渲染表中数据内容部分 -------------
+            // ------------- 渲染表中数据内容部分 ------------- //
 
             for($i=0;$i<$dataNum;$i++){
                 for($j=0;$j<$cellNum;$j++){
@@ -232,7 +230,7 @@ class Spread
                 }
             }
 
-            // ------------- 设置边框 -------------
+            // ------------- 设置边框 ------------- //
 
             $styleArray = [
                 'borders' => [
@@ -245,7 +243,7 @@ class Spread
 
             $sheet0->getStyle('A2:'.$cellName[$cellNum-1].($i+2))->applyFromArray($styleArray);
         }
-
+        $Excel = $Excels[0];
         // ------------- 输出 -------------
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');//告诉浏览器输出07Excel文件
         header("Content-Disposition: attachment;filename=".$Excel['fileName'].".xlsx");//告诉浏览器输出浏览器名称
