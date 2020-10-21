@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<title>服务器启动中</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style media="screen">
+p{font-size:32px; font-weight:bold;margin-top:50px;text-align:center;
+}.white{color: #fff;}
+</style>
+</head>
+<body>
+<p id="p">
+    <span class="white">服务器正在启动中...</span>
+</p>
+</body>
+<script type="text/javascript">
+function loading(n){
+    var text = ["<span class='white'>服务器正在启动中...</span>","服<span class='white'>务器正在启动中...</span>","服务<span class='white'>器正在启动中...</span>","服务器<span class='white'>正在启动中...</span>","服务器正<span class='white'>在启动中...</span>","服务器正在<span class='white'>启动中...</span>","服务器正在启<span class='white'>动中...</span>","服务器正在启动<span class='white'>中...</span>","服务器正在启动中<span class='white'>...</span>","服务器正在启动中..."];
+    return text[n];
+}
+var i=0,j=0;
+var st = setInterval(function(){
+    if( i < 10 ){
+        document.getElementById("p").innerHTML=loading(i);
+    }else{
+        i=-1;j++;if(j>2){
+            clearInterval(st);
+            setTimeout(function(){
+                document.getElementById("p").innerText='呀，服务器启动失败！';
+                document.title = '启动失败';
+            },800);
+        }
+    }
+    i++;
+},100);
+</script>
+</html>

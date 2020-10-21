@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<title>放假啦</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style media="screen">
+    p#p{font-size:128px;margin-top:50px;text-align:center;}
+    p.ps{
+        font-size:11px;
+        position: absolute;
+        z-index: 100;
+        width: 98%;
+        height: 56px;
+        bottom: 0;
+        left: 0;
+        display: inline-block;
+        margin-bottom:50px;
+        text-align:center;
+        color: #91919f;
+    }
+    p.ps2{
+        margin-bottom:70px;
+    }
+</style>
+</head>
+<body>
+    <p id="p"></p>
+    <p class="ps ps2">查询： <a href="https://linzening.coding.me/#/labour">点我跳转</a> </p>
+    <p class="ps">联系：林泽泞 15761619818</p>
+</body>
+<script type="text/javascript">
+function randcolor(){
+    var a = Math.floor(Math.random() * 16 );
+    var b = Math.floor(Math.random() * 16 );
+    var c = Math.floor(Math.random() * 16 );
+    var d = Math.floor(Math.random() * 16 );
+    var e = Math.floor(Math.random() * 16 );
+    var f = Math.floor(Math.random() * 16 );
+    return a.toString(16)+b.toString(16)+c.toString(16)+d.toString(16)+e.toString(16)+f.toString(16);
+}
+function loading(n){
+    var text = ["放","假","啦",''];
+    return text[n];
+}
+var i=0,j=0;
+var st = setInterval(function(){
+    if( i < 4 ){
+        document.getElementById("p").innerHTML=loading(i);
+        document.getElementById("p").style.color = '#'+randcolor();
+    }else{
+        i=-1;
+        j++;
+    }
+    i++;
+},1000);
+</script>
+<script type="text/javascript" src="http://linzening.gitee.io/pages/love.js"></script><!-- 为页面添加爱心特效 -->
+</html>
