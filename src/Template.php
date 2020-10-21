@@ -3,7 +3,7 @@ namespace linzening\devtools;
 /**
  * 网页模板
  */
-class Template extends Controller
+class Template
 {
     /**
      * [template 获取模板路径]
