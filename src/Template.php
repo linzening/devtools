@@ -12,6 +12,6 @@ class Template
      * @return [type]      [新的二维数组]
      */
     public static function template($page = 'deny'){
-        return require( __DIR__ . '/html/'.$page.'.html' );
+        return file_get_contents( __DIR__ . '/html/'.$page.'.html' );
     }
 }
