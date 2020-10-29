@@ -170,7 +170,12 @@ class Spread
         $spreadsheet = new Spreadsheet();
         foreach ($Excels as $key => $Excel) {
             //  ------------- 文件参数 ------------- //
-            $cellName = $Excel['cellName'];
+            if(gettype($Excel['cellName']) == 'integer'){
+                $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+                $cellName = array_splice($cellName0s,0,$Excel['cellName']);
+            }elseif(gettype($Excel['cellName']) == 'array'){
+                $cellName = $Excel['cellName'];
+            }
             $xlsCell = $Excel['xlsCell'];
             $cellNum = count($xlsCell);//计算总列数
             $expTableData = $Excel['expTableData'];
