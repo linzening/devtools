@@ -109,6 +109,31 @@ class Structure extends Controller
     }
 
     /**
+     * [tablerows 获取某个表的最新10条数据]
+     * @param  [type] $arr [二维数组]
+     * @param  [type] $key [键名]
+     * @return [type]      [新的二维数组]
+     */
+    public static function tablerows($tablename = ''){
+        $sql = 'SELECT COLUMN_NAME,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? ';
+        $column = Db::query($sql,[$tablename]);
+        $column_key = array_column($column,'COLUMN_COMMENT','COLUMN_NAME');
+
+        if($column_key['id'] ?? false){
+            $sql = 'SELECT * FROM '.$tablename.' ORDER BY `id` DESC LIMIT 10';
+        }else{
+            $sql = 'SELECT * FROM '.$tablename.' LIMIT 10';
+        }
+        
+        $datalist = Db::query($sql);
+        $list = [$column_key];
+        foreach ($datalist as $key => $value) {
+            $list[] = $value;
+        }
+        return $list;
+    }
+
+    /**
      * [array_group_by ph]
      * @param  [type] $arr [二维数组]
      * @param  [type] $key [键名]
