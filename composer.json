@@ -4,7 +4,7 @@
     "description": "this is a php devepment tools. like a composer.",
     "homepage": "https://packagist.org/packages/linzening/devtools",
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.0.5"
     },
     "license": "Apache-2.0",
     "authors": [
