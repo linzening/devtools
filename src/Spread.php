@@ -258,6 +258,150 @@ class Spread
         exit;
     }
 
+    /**
+     * Excel合并单元格的情况：开发中
+     * @access public
+     * @param  array     $Excel Excel相关配置信息
+     * @param  array     $expTableData 表格里面的数据
+     * @return file
+     */
+    public static function bexcelPuts($Excels){
+        $spreadsheet = new Spreadsheet();
+        foreach ($Excels as $key => $Excel) {
+            //  ------------- 文件参数 ------------- //
+            if(gettype($Excel['cellName']) == 'integer'){
+                $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+                $cellName = array_splice($cellName0s,0,$Excel['cellName']);
+            }elseif(gettype($Excel['cellName']) == 'array'){
+                $cellName = $Excel['cellName'];
+            }
+            $xlsCell = $Excel['xlsCell'];
+            $cellNum = count($xlsCell);//计算总列数
+            $expTableData = $Excel['expTableData'];
+            $dataNum = count($expTableData);//计算数据总行数
+            if($key === 0)
+            $sheet0 = $spreadsheet->getActiveSheet(); //默认的第一个表格
+            else
+            $sheet0 = $spreadsheet->createSheet();
+            $sheet0->setTitle( $Excel['sheetName'] ?? "Sheet".($key+1) );
+            //设置表格标题A1
+            $sheet0->mergeCells('A1:'.$cellName[$cellNum-1].'1');//表头合并单元格
+
+            // ------------- 表头 ------------- //
+            $sheet0->setCellValue('A1',$Excel['sheetTitle']);
+
+            $sheet0->getStyle('A1')->getFont()->setSize(20);
+            $sheet0->getStyle('A1')->getFont()->setName('微软雅黑');
+            //设置行高和列宽
+            // ------------- 横向水平宽度 ------------- //
+            if(isset($Excel['H'])){
+                foreach ($Excel['H'] as $key => $value) {
+                    $sheet0->getColumnDimension($key)->setWidth($value);
+                }
+            }
+
+            // ------------- 纵向垂直高度 ------------- //
+            if(isset($Excel['V'])){
+                foreach ($Excel['V'] as $key => $value) {
+                    $sheet0->getRowDimension($key)->setRowHeight($value);
+                }
+            }
+
+            // ------------- 第二行：表头要加粗和居中，加入颜色 ------------- //
+            $sheet0->getStyle('A1')
+            ->applyFromArray(['font' => ['bold' => false],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+            $setcolor = $sheet0->getStyle("A2:".$cellName[$cellNum-1]."2")->getFill();
+            $setcolor->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+            $colors=['00a000','53a500','3385FF','00a0d0','0C8080','EFE4B0','8db4e2','00b0f0','0fb746'];//设置总颜色
+            $selectcolor=$colors[mt_rand(0,count($colors)-1)];//获取随机颜色
+            $setcolor->getStartColor()->setRGB($selectcolor);
+
+            // ------------- 根据表格数据设置列名称 ------------- //
+
+            for($i=0;$i<$cellNum;$i++){
+                $sheet0->setCellValue($cellName[$i].'2', $xlsCell[$i][1])
+                ->getStyle($cellName[$i].'2')
+                ->applyFromArray(['font' => ['bold' => true],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+            }
+
+            // ------------- 渲染表中数据内容部分 ------------- //
+            $row0 = 3;
+            // 合并表格的情况
+            if( isset($expTableData[0]['items']) && gettype($expTableData[0]['items']) == 'array'){
+                foreach ($expTableData as $key7 => $value7) {
+                    // foreach ($value7 as $key8 => $value8) {
+                    //     if($value8 != 'items'){
+
+                    //     }
+                    // }
+
+                    $atom = count($value7['items']); //小单元格的行数
+                    $sheet0->mergeCells('A'.$row0.':A'.($row0 + $atom - 1));
+                    $sheet0->mergeCells('B'.$row0.':B'.($row0 + $atom - 1));
+
+                    $sheet0->getStyle($cellName[0].($row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                    $sheet0->setCellValueExplicit($cellName[0].($row0),$value7['partid'],PHPExcel_Cell_DataType::TYPE_STRING);
+                    $sheet0->getStyle($cellName[0].($row0))->getNumberFormat()->setFormatCode("@");
+
+                    $sheet0->getStyle($cellName[1].($row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                    $sheet0->setCellValueExplicit($cellName[1].($row0),$value7['partname'],PHPExcel_Cell_DataType::TYPE_STRING);
+                    $sheet0->getStyle($cellName[1].($row0))->getNumberFormat()->setFormatCode("@");
+
+                    // exit(count($value7));
+                    foreach ($value7['items'] as $key9 => $value9) {
+                        $s = $cellName[2].($row0 + $key9);
+                        $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                        $sheet0->setCellValueExplicit($s,$value9['major_id'],PHPExcel_Cell_DataType::TYPE_STRING);
+                        $s = $cellName[3].($row0 + $key9);
+                        $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                        $sheet0->setCellValueExplicit($s,$value9['major_name'],PHPExcel_Cell_DataType::TYPE_STRING);
+                        $s = $cellName[4].($row0 + $key9);
+                        $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                        $sheet0->setCellValueExplicit($s,$value9['short'],PHPExcel_Cell_DataType::TYPE_STRING);
+                    }
+
+                    $row0 += $atom;
+                    $i += $atom - 1;
+                }
+                // for($i=0;$i<$dataNum;$i++){
+                //     for($j=0;$j<$cellNum;$j++){
+                //         $sheet0->getStyle($cellName[$j].($i+3))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                //         $sheet0->setCellValueExplicit($cellName[$j].($i+3),$expTableData[$i][$xlsCell[$j][0]],PHPExcel_Cell_DataType::TYPE_STRING);
+                //         $sheet0->getStyle($cellName[$j].($i+3))->getNumberFormat()->setFormatCode("@");
+                //     }
+                // }
+            }
+
+            // for($i=0;$i<$dataNum;$i++){
+            //     for($j=0;$j<$cellNum;$j++){
+            //         $sheet0->getStyle($cellName[$j].($i+3))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+            //         $sheet0->setCellValueExplicit($cellName[$j].($i+3),$expTableData[$i][$xlsCell[$j][0]],PHPExcel_Cell_DataType::TYPE_STRING);
+            //         $sheet0->getStyle($cellName[$j].($i+3))->getNumberFormat()->setFormatCode("@");
+            //     }
+            // }
+
+            // ------------- 设置边框 ------------- //
+
+            $styleArray = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF505050'],
+                    ],
+                ],
+            ];
+
+            $sheet0->getStyle('A2:'.$cellName[$cellNum-1].($i))->applyFromArray($styleArray);
+        }
+        $Excel = $Excels[0];
+        // ------------- 输出 -------------
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');//告诉浏览器输出07Excel文件
+        header("Content-Disposition: attachment;filename=".$Excel['fileName'].".xlsx");//告诉浏览器输出浏览器名称
+        header('Cache-Control: max-age=0');//禁止缓存
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
 
     /**
      * Excel读取
