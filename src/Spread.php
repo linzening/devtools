@@ -265,7 +265,7 @@ class Spread
      * @param  array     $expTableData 表格里面的数据
      * @return file
      */
-    public static function bexcelPuts($Excels){
+    public static function mergePuts($Excels){
         $spreadsheet = new Spreadsheet();
         foreach ($Excels as $key => $Excel) {
             //  ------------- 文件参数 ------------- //
@@ -329,56 +329,40 @@ class Spread
             // 合并表格的情况
             if( isset($expTableData[0]['items']) && gettype($expTableData[0]['items']) == 'array'){
                 foreach ($expTableData as $key7 => $value7) {
-                    // foreach ($value7 as $key8 => $value8) {
-                    //     if($value8 != 'items'){
-
-                    //     }
-                    // }
-
+                    // $value7为每一大单条数据
                     $atom = count($value7['items']); //小单元格的行数
-                    $sheet0->mergeCells('A'.$row0.':A'.($row0 + $atom - 1));
-                    $sheet0->mergeCells('B'.$row0.':B'.($row0 + $atom - 1));
+                    
+                    $temp_i = 0; //父级元素个数
+                    foreach ($value7 as $key50 => $value50) {
+                        if($key50 != 'items'){
+                            // 处理合并单元格
+                            $sheet0->mergeCells($cellName[$temp_i].$row0.':'.$cellName[$temp_i].($row0 + $atom - 1));
 
-                    $sheet0->getStyle($cellName[0].($row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                    $sheet0->setCellValueExplicit($cellName[0].($row0),$value7['partid'],PHPExcel_Cell_DataType::TYPE_STRING);
-                    $sheet0->getStyle($cellName[0].($row0))->getNumberFormat()->setFormatCode("@");
+                            // 填充合并单元格数据
+                            $sheet0->getStyle($cellName[$temp_i].($row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                            $sheet0->setCellValueExplicit($cellName[$temp_i].($row0),$value7[$key50],PHPExcel_Cell_DataType::TYPE_STRING);
+                            $sheet0->getStyle($cellName[$temp_i].($row0))->getNumberFormat()->setFormatCode("@");
 
-                    $sheet0->getStyle($cellName[1].($row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                    $sheet0->setCellValueExplicit($cellName[1].($row0),$value7['partname'],PHPExcel_Cell_DataType::TYPE_STRING);
-                    $sheet0->getStyle($cellName[1].($row0))->getNumberFormat()->setFormatCode("@");
-
-                    // exit(count($value7));
+                            $temp_i++;
+                        }
+                    }
+                    
                     foreach ($value7['items'] as $key9 => $value9) {
-                        $s = $cellName[2].($row0 + $key9);
-                        $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                        $sheet0->setCellValueExplicit($s,$value9['major_id'],PHPExcel_Cell_DataType::TYPE_STRING);
-                        $s = $cellName[3].($row0 + $key9);
-                        $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                        $sheet0->setCellValueExplicit($s,$value9['major_name'],PHPExcel_Cell_DataType::TYPE_STRING);
-                        $s = $cellName[4].($row0 + $key9);
-                        $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                        $sheet0->setCellValueExplicit($s,$value9['short'],PHPExcel_Cell_DataType::TYPE_STRING);
+                        // $value9是一行的数据
+                        $temp_j = 0; //子级元素字段个数
+                        foreach ($value9 as $key90 => $value90) {
+                            $s = $cellName[$temp_i + $temp_j].($row0 + $key9);
+                            $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                            $sheet0->setCellValueExplicit($s,$value9[$key90],PHPExcel_Cell_DataType::TYPE_STRING);
+
+                            $temp_j++;
+                        }
                     }
 
                     $row0 += $atom;
                     $i += $atom - 1;
                 }
-                // for($i=0;$i<$dataNum;$i++){
-                //     for($j=0;$j<$cellNum;$j++){
-                //         $sheet0->getStyle($cellName[$j].($i+3))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                //         $sheet0->setCellValueExplicit($cellName[$j].($i+3),$expTableData[$i][$xlsCell[$j][0]],PHPExcel_Cell_DataType::TYPE_STRING);
-                //         $sheet0->getStyle($cellName[$j].($i+3))->getNumberFormat()->setFormatCode("@");
-                //     }
-                // }
             }
-
-            // for($i=0;$i<$dataNum;$i++){
-            //     for($j=0;$j<$cellNum;$j++){
-            //         $sheet0->getStyle($cellName[$j].($i+3))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-            //         $sheet0->setCellValueExplicit($cellName[$j].($i+3),$expTableData[$i][$xlsCell[$j][0]],PHPExcel_Cell_DataType::TYPE_STRING);
-            //         $sheet0->getStyle($cellName[$j].($i+3))->getNumberFormat()->setFormatCode("@");
-            //     }
-            // }
 
             // ------------- 设置边框 ------------- //
 

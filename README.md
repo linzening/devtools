@@ -1,4 +1,4 @@
-#### PHP开发工具集 version 1.1.4
+#### PHP开发工具集 version 1.1.6
 
 * Request类
 * Spread类
@@ -17,7 +17,7 @@ $lock->unlock(); //解锁
 
 #### composer使用方法
 
-* git tag v1.1.4 #新建tag
+* git tag v1.1.6 #新建tag
 * git push --tag #推送tag
 
 > composer地址：
