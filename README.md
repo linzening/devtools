@@ -26,6 +26,32 @@ $lock->unlock(); //解锁
 
 ## Excel表格使用说明
 
+### 多个表格导出
+
+```php
+$Excel['cellName']=['A','B','C','D','E','F','G','H','I'];
+$Excel['H'] = ['A'=>8,'B'=>12,'C'=>18,'D'=>12,'E'=>18,'F'=>18,'G'=>36,'H'=>12,'I'=>14];//横向水平宽度
+$Excel['V'] = ['1'=>40,'2'=>26 ];//纵向垂直高度
+$Excel['sheetTitle'] = $fileName.'个人详细';//大标题，自定义
+$Excel['sheetName']='个人详细';//大标题，自定义
+$Excel['xlsCell']=[
+    ['i','序号'],
+    ['grade','年级'],
+    ['classfull','班级'],
+    ['realname','姓名'],
+    ['studentid','学号'],
+    ['datetime','時間'],
+    ['content','內容'],
+    ['setcount','次數'],
+    ['admin_name','管理員'],
+];
+$Excel['expTableData'] = model('core')->every_user($part,$year);
+
+$Excels[] = $Excel;
+
+\linzening\devtools\Spread::excelPuts($Excels);
+```
+
 ### 表格合并导出
 
 ```php
