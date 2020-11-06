@@ -325,7 +325,7 @@ class Spread
             }
 
             // ------------- 渲染表中数据内容部分 ------------- //
-            $row0 = 3;
+            $row0 = 3; //从第三行开始渲染数据
             // 合并表格的情况
             if( isset($expTableData[0]['items']) && gettype($expTableData[0]['items']) == 'array'){
                 foreach ($expTableData as $key7 => $value7) {
@@ -360,9 +360,10 @@ class Spread
                     }
 
                     $row0 += $atom;
-                    $i += $atom - 1;
                 }
             }
+
+            $row0--;
 
             // ------------- 设置边框 ------------- //
 
@@ -375,7 +376,7 @@ class Spread
                 ],
             ];
 
-            $sheet0->getStyle('A2:'.$cellName[$cellNum-1].($i))->applyFromArray($styleArray);
+            $sheet0->getStyle('A2:'.$cellName[$cellNum-1].($row0))->applyFromArray($styleArray);
         }
         $Excel = $Excels[0];
         // ------------- 输出 -------------
