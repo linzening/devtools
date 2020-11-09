@@ -96,3 +96,14 @@ $Excels[] = $Excel;
 + 导出格式预览
 
 ![合并导出](/src/assets/mergecell.png)
+
+
+## 模板使用说明
+
+```php
+// 输出模板
+public function html($page='deny'){
+    // $page in deny,deving,holiday,notice,starting,temporary,upgrade-browser
+    return \linzening\devtools\Template::template($page);
+}
+```
