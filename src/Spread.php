@@ -66,7 +66,7 @@ class Spread
 	}
 
     /**
-     * Excel输出
+     * Excel输出：即将废弃的方法
      * @access public
      * @param  array     $Excel Excel相关配置信息
      * @param  array     $expTableData 表格里面的数据
@@ -323,7 +323,7 @@ class Spread
     }
 
     /**
-     * Excel合并单元格的情况：开发中
+     * Excel合并单元格的情况：即将废弃的方法
      * @access public
      * @param  array     $Excel Excel相关配置信息
      * @param  array     $expTableData 表格里面的数据
