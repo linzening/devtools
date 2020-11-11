@@ -1,4 +1,4 @@
-#### PHP开发工具集 version 1.1.6
+#### PHP开发工具集 version 1.1.8
 
 * Request类
 * Spread类
@@ -17,7 +17,7 @@ $lock->unlock(); //解锁
 
 #### composer使用方法
 
-* git tag v1.1.6 #新建tag
+* git tag v1.1.8 #新建tag
 * git push --tag #推送tag
 
 > composer地址：
@@ -49,12 +49,6 @@ $Excel['expTableData'] = model('core')->every_user($part,$year);
 
 $Excels[] = $Excel;
 
-\linzening\devtools\Spread::excelPuts($Excels);
-```
-
-### 表格合并导出
-
-```php
 $parts = array_group_by($list,'partid');
 
 $list0 = [];
@@ -90,7 +84,7 @@ $Excel['xlsCell']=[
 $Excel['expTableData'] = $list0;
 $Excels[] = $Excel;
 
-\linzening\devtools\Spread::mergePuts($Excels);
+\linzening\devtools\Spread::excelPuts($Excels);
 ```
 
 + 导出格式预览
