@@ -111,7 +111,7 @@ class Spread
         ->applyFromArray(['font' => ['bold' => false],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
         $setcolor = $sheet0->getStyle("A2:".$cellName[$cellNum-1]."2")->getFill();
         $setcolor->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-        $colors=['00a000','53a500','3385FF','00a0d0','0C8080','EFE4B0','8db4e2','00b0f0','0fb746'];//设置总颜色
+        $colors=['00a000','53a500','3385FF','00a0d0','0C8080','EFE4B0','00b0f0','0fb746','FF6A6A','FFC1C1','EE9A49','66CDAA','CDC673','CD6839'];//设置总颜色
         $selectcolor=$colors[mt_rand(0,count($colors)-1)];//获取随机颜色
         $setcolor->getStartColor()->setRGB($selectcolor);
 
