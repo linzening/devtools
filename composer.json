@@ -15,7 +15,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "linzening\\devtools\\": "src",
+            "linzening\\devtools\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "linzening\\devtools\\tests\\": "tests"
         }
     },
