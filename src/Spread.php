@@ -171,7 +171,9 @@ class Spread
         foreach ($Excels as $key_number => $Excel) {
             //  ------------- 文件参数 ------------- //
             $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-            if(gettype($Excel['cellName']) == 'integer'){
+            if( ! isset($Excel['cellName']) ){
+                $cellName = array_splice($cellName0s,0,count($Excel['xlsCell']));
+            }elseif(gettype($Excel['cellName']) == 'integer'){
                 $cellName = array_splice($cellName0s,0,$Excel['cellName']);
             }elseif(gettype($Excel['cellName']) == 'array'){
                 $cellName = $Excel['cellName'];

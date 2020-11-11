@@ -68,10 +68,8 @@ foreach ($parts as $key => $value) {
 
 $fileName = "高尔夫球对阵表导出";
 $Excel['fileName'] = $fileName.date('Y年m月d日-His',time());//or $xlsTitle
-$Excel['cellName'] = 5;
-$Excel['bArray'] = [2,3];
-$Excel['H'] = ['A'=>22,'B'=>20,'C'=>30,'D'=>40,'E'=>30];//横向水平宽度
-$Excel['V'] = ['1'=>40,'2'=>26];//纵向垂直高度
+$Excel['H'] = [22,20,30,40,30];//横向水平宽度
+
 $Excel['sheetTitle'] = $fileName;//大标题，自定义
 $Excel['sheetName'] = '扣除';//表格名称
 $Excel['xlsCell']=[
