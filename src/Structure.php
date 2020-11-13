@@ -27,7 +27,7 @@ class Structure extends Controller
             exit("数据库名为空");
         }
 
-        $sql = "SELECT TABLE_NAME,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA ='{$database}' LIMIT 200";
+        $sql = "SELECT TABLE_NAME,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA ='{$database}' LIMIT 400";
 
         $tables = Db::query($sql);
         $tablearr = array_column($tables,'TABLE_NAME');
