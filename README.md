@@ -29,9 +29,11 @@ $lock->unlock(); //解锁
 ### 多个表格导出
 
 ```php
-$Excel['cellName']=['A','B','C','D','E','F','G','H','I'];
-$Excel['H'] = ['A'=>8,'B'=>12,'C'=>18,'D'=>12,'E'=>18,'F'=>18,'G'=>36,'H'=>12,'I'=>14];//横向水平宽度
-$Excel['V'] = ['1'=>40,'2'=>26 ];//纵向垂直高度
+$fileName = "高尔夫球对阵表导出";
+$Excel['fileName'] = $fileName.date('Y年m月d日-His',time());//or $xlsTitle
+$Excel['cellName'] = 9;
+$Excel['H'] = [8,12,18,12,18,18,36,12,14];//横向水平宽度
+
 $Excel['sheetTitle'] = $fileName.'个人详细';//大标题，自定义
 $Excel['sheetName']='个人详细';//大标题，自定义
 $Excel['xlsCell']=[
@@ -87,8 +89,9 @@ $Excels[] = $Excel;
 
 + 导出格式预览
 
-![合并导出](/src/assets/mergecell.png)
+![合并导出](src/assets/mergecell.png)
 
+![合并导出](https://cdn.xinyunan.cn/uploads/2020/31199_mergecell.png)
 
 ## 模板使用说明
 
