@@ -208,6 +208,24 @@ class Spread
             //     }
             // }
 
+            // ------------- 单元格宽度 ------------- //
+            if( $Excel['H'] === 1 || $Excel['H'] == 'auto' ) {
+                # 自动匹配宽度
+                $h = [];
+                foreach ($expTableData as $key => $value) {
+                    if($key < 20 ){
+                        $key0_0 = 0;
+                        foreach ($value as $key0 => $value0) {
+                            if( strlen($value0) > $h[$key0_0] - 5){
+                                $h[$key0_0] = strlen($value0) + 5;
+                            }
+                            $key0_0++;
+                        }
+                    }
+                }
+                $Excel['H'] = $h;
+            }
+
             if(isset($Excel['H'])){
                 foreach ($Excel['H'] as $key => $value) {
                     if( gettype($key) == 'integer' ){
