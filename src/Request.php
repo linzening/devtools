@@ -45,10 +45,17 @@ class Request
 	 */
 	public function http_curl($url, $data, $proxy = '') {
 		$data=json_encode($data,true);//数组转换成json字符串
-        $ch = curl_init($url);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
 		if(!empty($proxy)){
 			$proxy_demo = "http://183.251.xxx.65:566"; // 设置代理
 			curl_setopt ($ch, CURLOPT_PROXY, $proxy);
+		}
+
+		// 如果是HTTPS，需要加这两行
+		if( substr($url,0,5) == 'https'){
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+  			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 		}
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
