@@ -29,13 +29,13 @@ $lock->unlock(); //解锁
 ### 多个表格导出
 
 ```php
-$fileName = "高尔夫球对阵表导出";
-$Excel['fileName'] = $fileName.date('Y年m月d日-His',time());//or $xlsTitle
-$Excel['cellName'] = 9;
+$fileName = "某某项目数据合并导出";
+$Excel['fileName'] = $fileName.date('Y年m月d日-His',time());//文件名称
+//$Excel['cellName'] = 9; //可省略
 $Excel['H'] = [8,12,18,12,18,18,36,12,14];//横向水平宽度
 
-$Excel['sheetTitle'] = $fileName.'个人详细';//大标题，自定义
-$Excel['sheetName']='个人详细';//大标题，自定义
+$Excel['sheetTitle'] = $fileName.'个人详细';//表格大标题 自定义
+$Excel['sheetName']='个人详细';//表格名称 自定义
 $Excel['xlsCell']=[
     ['i','序号'],
     ['grade','年级'],
@@ -47,7 +47,7 @@ $Excel['xlsCell']=[
     ['setcount','次數'],
     ['admin_name','管理員'],
 ];
-$Excel['expTableData'] = model('core')->every_user($part,$year);
+$Excel['expTableData'] = model('core')->every_user($part,$year); //二维数组，对应`xlsCell`参数
 
 $Excels[] = $Excel;
 
@@ -68,7 +68,7 @@ foreach ($parts as $key => $value) {
     $list0[] = $item0;
 }
 
-$fileName = "高尔夫球对阵表导出";
+$fileName = "某某项目数据不合并导出2";
 $Excel['fileName'] = $fileName.date('Y年m月d日-His',time());//or $xlsTitle
 $Excel['H'] = [22,20,30,40,30];//横向水平宽度
 
@@ -84,7 +84,10 @@ $Excel['xlsCell']=[
 $Excel['expTableData'] = $list0;
 $Excels[] = $Excel;
 
-\linzening\devtools\Spread::excelPuts($Excels);
+if($Excels){
+    \linzening\devtools\Spread::excelPuts($Excels);
+}
+exit('暂无数据导出');
 ```
 
 + 导出格式预览
