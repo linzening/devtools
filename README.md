@@ -32,7 +32,8 @@ $lock->unlock(); //解锁
 $fileName = "某某项目数据合并导出";
 $Excel['fileName'] = $fileName.date('Y年m月d日-His',time());//文件名称
 //$Excel['cellName'] = 9; //可省略
-$Excel['H'] = [8,12,18,12,18,18,36,12,14];//横向水平宽度
+$Excel['H'] = [8,12,18,12,18,18,36,12,14];//如果是数组，即为每一列的宽度
+$Excel['H'] = 2; //如果是数字，则为增加的宽度
 
 $Excel['sheetTitle'] = $fileName.'个人详细';//表格大标题 自定义
 $Excel['sheetName']='个人详细';//表格名称 自定义

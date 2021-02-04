@@ -27,16 +27,16 @@ class Structure extends Controller
             exit("数据库名为空");
         }
 
-        $sql = "SELECT TABLE_NAME,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA ='{$database}' LIMIT 400";
-
-        $tables = Db::query($sql);
-        $tablearr = array_column($tables,'TABLE_NAME');
-        $tabletxt = implode('\',\'',$tablearr);
-
         $where = '';
         if(in_array($query , ['LIKE','like']) && !empty($table) ){
             $where = ' AND TABLE_NAME LIKE "%'.$table.'%"';
         }
+
+        $sql = "SELECT TABLE_NAME,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA ='{$database}' {$where} LIMIT 1000";
+
+        $tables = Db::query($sql);
+        $tablearr = array_column($tables,'TABLE_NAME');
+        $tabletxt = implode('\',\'',$tablearr);
 
         $sql = "SELECT TABLE_NAME,COLUMN_NAME,COLUMN_TYPE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,IS_NULLABLE,COLUMN_DEFAULT,COLUMN_COMMENT
         FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ='{$database}' AND TABLE_NAME  IN ('{$tabletxt}') {$where} ORDER BY ORDINAL_POSITION ASC";
