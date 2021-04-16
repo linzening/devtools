@@ -170,7 +170,9 @@ class Spread
         $spreadsheet = new Spreadsheet();
         foreach ($Excels as $key_number => $Excel) {
             //  ------------- 文件参数 ------------- //
-            $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+            // $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+            $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                        'AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS'];
             if( ! isset($Excel['cellName']) ){
                 $cellName = array_splice($cellName0s,0,count($Excel['xlsCell']));
             }elseif(gettype($Excel['cellName']) == 'integer'){
