@@ -1,12 +1,13 @@
 <?php
 namespace linzening\devtools;
 /**
- * 数据库生成数据库文档 TP5.1版本
+ * 数据库生成数据库文档 TP6.0版本
+ * 
  */
-use think\Db;
+use think\facade\Db;
 use think\facade\Config;
-use think\Controller;
-class Structure extends Controller
+use cmf\controller\BaseController;
+class Structure6 extends BaseController
 {
     /**
      * [array_group_by ph] 获取数据列表导出文档
