@@ -349,12 +349,12 @@ class Spread
             //导出到服务器
             ob_start();
             $objWriter = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $objWriter->save('./'.$Excel['fileName']);
+            $objWriter->save('./'.$Excel['fileName'].'.xlsx');
             /* 释放内存 */
             $spreadsheet->disconnectWorksheets();
             unset($spreadsheet);
             ob_end_flush();
-            exit;
+            exit('结束时间'.date('Y-m-d H:i:s')."\n");
         }
 
         // ------------- 输出 -------------
