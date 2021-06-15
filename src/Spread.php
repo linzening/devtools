@@ -176,7 +176,8 @@ class Spread
             $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
                 'AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ',
                 'BA','BB','BC','BD','BE','BF','BG','BH','BI','BJ','BK','BL','BM','BN','BO','BP','BQ','BR','BS','BT','BU','BV','BW','BX','BY','BZ',
-                'CA','CB','CC','CD','CE','CF','CG','CH','CI','CJ','CK','CL','CM','CN','CO','CP','CQ','CR','CS','CT','CU','CV','CW','CX','CY','CZ'];
+                'CA','CB','CC','CD','CE','CF','CG','CH','CI','CJ','CK','CL','CM','CN','CO','CP','CQ','CR','CS','CT','CU','CV','CW','CX','CY','CZ',
+                'DA','DB','DC','DD','DE','DF','DG','DH','DI','DJ','DK','DL','DM','DN','DO','DP','DQ','DR','DS','DT','DU','DV','DW','DX','DY','DZ'];
             if( ! isset($Excel['cellName']) ){
                 $cellName = array_splice($cellName0s,0,count($Excel['xlsCell']));
             }elseif(gettype($Excel['cellName']) == 'integer'){
@@ -342,6 +343,20 @@ class Spread
             $sheet0->getStyle('A2:'.$cellName[$cellNum-1] . $row0 )->applyFromArray($styleArray);
         }
         $Excel = $Excels[0];
+
+        // 命令行下，导出到服务器
+        if( isset($Excel['local']) && $Excel['local'] === true){
+            //导出到服务器
+            ob_start();
+            $objWriter = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $objWriter->save('./'.$Excel['fileName']);
+            /* 释放内存 */
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+            ob_end_flush();
+            exit;
+        }
+
         // ------------- 输出 -------------
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');//告诉浏览器输出07Excel文件
         header("Content-Disposition: attachment;filename=".$Excel['fileName'].".xlsx");//告诉浏览器输出浏览器名称
