@@ -22,8 +22,26 @@ class Spread
      * @return file
      */
     public static function excelPuts($Excels){
+        // 数据预处理：直接是二位表格数据
+        if(!isset($Excels[0]['expTableData'])){
+            $Excels = [['expTableData'=>$Excels]];
+        }
+        if(empty($Excels[0]['expTableData'])){
+            exit('暂无数据导出');
+        }
+        // 数据预处理：没有文件标题
+        if(!isset($Excels[0]['fileName']) || empty($Excels[0]['fileName'])){
+            $Excels[0]['fileName'] = '数据导出-'.date('Y年m月d日-His');
+        }
+
         $spreadsheet = new Spreadsheet();
         foreach ($Excels as $key_number => $Excel) {
+            // 数据预处理：没有数据列
+            if(!isset($Excel['xlsCell'])){
+                foreach ($Excel['expTableData'][0] as $key99 => $value99) {
+                    $Excel['xlsCell'][] = [$key99,$key99];
+                }
+            }
             //  ------------- 文件参数 ------------- //
             $cellName0s = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
                 'AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ',
@@ -48,28 +66,21 @@ class Spread
             else
                 $sheet0 = $spreadsheet->createSheet();
             $sheet0->setTitle( $Excel['sheetName'] ?? "Sheet".($key_number+1) );
-            //设置表格标题A1
-            $sheet0->mergeCells('A1:'.$cellName[$cellNum-1].'1');//表头合并单元格
 
             // ------------- 表头 ------------- //
-            $sheet0->setCellValue('A1',$Excel['sheetTitle']);
+            // 是否需要表头
+            if(isset($Excel['sheetTitle'])){
+                //设置表格标题A1
+                $sheet0->mergeCells('A1:'.$cellName[$cellNum-1].'1');//表头合并单元格
+                $sheet0->setCellValue('A1',$Excel['sheetTitle']);
+                $sheet0->getStyle('A1')->getFont()->setSize(20);
+                $sheet0->getStyle('A1')->getFont()->setName('微软雅黑');
+            }
 
-            $sheet0->getStyle('A1')->getFont()->setSize(20);
-            $sheet0->getStyle('A1')->getFont()->setName('微软雅黑');
             //设置行高和列宽
-            // ------------- 横向水平宽度 ------------- //
-            // if(isset($Excel['H'])){
-            //     foreach ($Excel['H'] as $key => $value) {
-            //         $key0 = $key;
-            //         if( gettype($key0) == 'integer' ){
-            //             $key0 = $cellName0s[$key0];
-            //         }
-            //         $sheet0->getColumnDimension($key0)->setWidth($value);
-            //     }
-            // }
 
             // ------------- 自动生成单元格宽度 ------------- //
-            if( $Excel['H'] === 1 || $Excel['H'] == 'auto' ) {
+            if( isset($Excel['H']) && ($Excel['H'] === 1 || $Excel['H'] == 'auto') ) {
                 # 自动匹配宽度
                 $h = [];
                 foreach ($expTableData as $key => $value) {
@@ -86,7 +97,6 @@ class Spread
                     }
                 }
                 $Excel['H'] = $h;
-                // halt($Excel['H']);
             }
 
             if(isset($Excel['H'])){
@@ -102,21 +112,36 @@ class Spread
 
             // ------------- 纵向垂直高度：行高 ------------- //
             if( ! isset($Excel['V']) ){
-                $Excel['V'] = ['1'=>40,'2'=>26];
+                if(isset($Excel['sheetTitle'])){
+                    $Excel['V'] = ['1'=>40,'2'=>26];
+                }else{
+                    // 没有标题行的情况下
+                    $Excel['V'] = ['1'=>26];
+                }
             }
 
             foreach ($Excel['V'] as $key => $value) {
                 $sheet0->getRowDimension($key)->setRowHeight($value);
             }
-
+            $row0 = 3; //从第三行开始渲染数据
+            if(!isset($Excel['sheetTitle'])){
+                $row0 = 2;
+            }
+            $rowmax = $row0;
+            
             // ------------- 第二行：表头要加粗和居中，加入颜色 ------------- //
             $sheet0->getStyle('A1')
             ->applyFromArray(['font' => ['bold' => false],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-            $setcolor = $sheet0->getStyle("A2:".$cellName[$cellNum-1]."2")->getFill();
+            $setcolor = $sheet0->getStyle("A".($row0-1).":".$cellName[$cellNum-1].($row0-1))->getFill();
             $setcolor->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
             $colors=['00a000','53a500','3385FF','00a0d0','0C8080','EFE4B0','8db4e2','00b0f0','0fb746'];//设置总颜色
             $selectcolor=$colors[mt_rand(0,count($colors)-1)];//获取随机颜色
-            $setcolor->getStartColor()->setRGB($selectcolor);
+            if($row0 == 2){
+                $setcolor->getStartColor();
+            }else{
+                $setcolor->getStartColor()->setRGB($selectcolor);
+            }
+            
 
             // ------------- 根据表格数据设置列名称 ------------- //
 
@@ -127,12 +152,10 @@ class Spread
             // }
 
             foreach ($xlsCell as $key => $value) {
-                $sheet0->setCellValue($cellName[$key].'2', $xlsCell[$key][1])
-                ->getStyle($cellName[$key].'2')
+                $sheet0->setCellValue($cellName[$key].($row0-1), $xlsCell[$key][1])
+                ->getStyle($cellName[$key].($row0-1))
                 ->applyFromArray(['font' => ['bold' => true],'alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
             }
-
-            $row0 = 3; //从第三行开始渲染数据
 
             // ------------- 渲染表中数据内容部分：合并渲染和普通渲染 ------------- //
             if( isset($expTableData[0]['items']) && gettype($expTableData[0]['items']) == 'array'){
@@ -144,12 +167,12 @@ class Spread
                     foreach ($value7 as $key50 => $value50) {
                         if($key50 != 'items'){
                             // 处理合并单元格
-                            $sheet0->mergeCells($cellName[$temp_i].$row0.':'.$cellName[$temp_i].($row0 + $atom - 1));
+                            $sheet0->mergeCells($cellName[$temp_i].$rowmax.':'.$cellName[$temp_i].($rowmax + $atom - 1));
 
                             // 填充合并单元格数据
-                            $sheet0->getStyle($cellName[$temp_i].($row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                            $sheet0->setCellValueExplicit($cellName[$temp_i].($row0),$value7[$key50],PHPExcel_Cell_DataType::TYPE_STRING);
-                            $sheet0->getStyle($cellName[$temp_i].($row0))->getNumberFormat()->setFormatCode("@");
+                            $sheet0->getStyle($cellName[$temp_i].($rowmax))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                            $sheet0->setCellValueExplicit($cellName[$temp_i].($rowmax),$value7[$key50],PHPExcel_Cell_DataType::TYPE_STRING);
+                            $sheet0->getStyle($cellName[$temp_i].($rowmax))->getNumberFormat()->setFormatCode("@");
 
                             $temp_i++;
                         }
@@ -159,7 +182,7 @@ class Spread
                         // $value9是一行的数据
                         $temp_j = 0; //子级元素字段个数
                         foreach ($value9 as $key90 => $value90) {
-                            $s = $cellName[$temp_i + $temp_j].($row0 + $key9);
+                            $s = $cellName[$temp_i + $temp_j].($rowmax + $key9);
                             $sheet0->getStyle($s)->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
                             $sheet0->setCellValueExplicit($s,$value9[$key90],PHPExcel_Cell_DataType::TYPE_STRING);
 
@@ -167,19 +190,19 @@ class Spread
                         }
                     }
 
-                    $row0 += $atom;
+                    $rowmax += $atom;
                 }
-                $row0--;
+                $rowmax--;
             }else{
                 // ------------- 渲染表中数据内容部分：普通渲染 ------------- //
                 for($i=0;$i<$dataNum;$i++){
                     for($j=0;$j<$cellNum;$j++){
-                        $sheet0->getStyle($cellName[$j].($i+3))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
-                        $sheet0->setCellValueExplicit($cellName[$j].($i+3),$expTableData[$i][$xlsCell[$j][0]],PHPExcel_Cell_DataType::TYPE_STRING);
-                        $sheet0->getStyle($cellName[$j].($i+3))->getNumberFormat()->setFormatCode("@");
+                        $sheet0->getStyle($cellName[$j].($i+$row0))->applyFromArray(['alignment' => ['horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER]]);
+                        $sheet0->setCellValueExplicit($cellName[$j].($i+$row0),$expTableData[$i][$xlsCell[$j][0]],PHPExcel_Cell_DataType::TYPE_STRING);
+                        $sheet0->getStyle($cellName[$j].($i+$row0))->getNumberFormat()->setFormatCode("@");
                     }
                 }
-                $row0 += $i - 1;
+                $rowmax += $i - 1;
             }
 
             // ------------- 设置边框 ------------- //
@@ -192,8 +215,8 @@ class Spread
                     ],
                 ],
             ];
-
-            $sheet0->getStyle('A2:'.$cellName[$cellNum-1] . $row0 )->applyFromArray($styleArray);
+            // echo 'A'.($row0-1).':'.$cellName[$cellNum-1] . $rowmax;exit;
+            $sheet0->getStyle('A'.($row0-1).':'.$cellName[$cellNum-1] . $rowmax)->applyFromArray($styleArray);
         }
         $Excel = $Excels[0];
 

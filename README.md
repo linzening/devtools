@@ -89,6 +89,9 @@ if($Excels){
     \linzening\devtools\Spread::excelPuts($Excels);
 }
 exit('暂无数据导出');
+
+// 精简导出
+\linzening\devtools\Spread::excelPuts($list);
 ```
 
 + 导出格式预览
