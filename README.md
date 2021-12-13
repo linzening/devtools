@@ -96,7 +96,7 @@ exit('暂无数据导出');
 
 + 导出格式预览
 
-![合并导出](https://cdn.xinyunan.cn/uploads/2020/31199_mergecell.png)
+![合并导出](https://cdn.fe80.cn/uploads/long/31199_mergecell.png)
 
 ## 模板使用说明
 

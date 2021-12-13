@@ -24,7 +24,11 @@ class Spread
     public static function excelPuts($Excels){
         // 数据预处理：直接是二位表格数据
         if(!isset($Excels[0]['expTableData'])){
-            $Excels = [['expTableData'=>$Excels]];
+            if(isset($Excels['expTableData'])){
+                $Excels = [$Excels];
+            }else{
+                $Excels = [['expTableData'=>$Excels]];
+            }
         }
         if(empty($Excels[0]['expTableData'])){
             exit('暂无数据导出');
