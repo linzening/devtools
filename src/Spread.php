@@ -37,6 +37,9 @@ class Spread
         if(!isset($Excels[0]['fileName']) || empty($Excels[0]['fileName'])){
             $Excels[0]['fileName'] = '数据导出-'.date('Y年m月d日-His');
         }
+        if(isset($Excels[0]['cvs'])){
+            self::cvsPuts($Excels); //导出cvs
+        }
 
         $spreadsheet = new Spreadsheet();
         foreach ($Excels as $key_number => $Excel) {
@@ -260,4 +263,54 @@ class Spread
         $sheetdata = $sheet->toArray();
         return $sheetdata; // --- 直接返回数组数据
 	}
+
+    /**
+     * 导出csv
+     * @param array $data 数据
+     * @param array $headers csv标题+数据
+     * @param array $specHeaders 需要转成字符串的数组下标
+     * @param string $fileName 文件名称
+     * @param bool $isFirst 是否只去第一条
+     * @param string $fontType 需要导出的字符集 csv默认为utf-8
+     * @author zhaohao
+     * @date 2019-12-10 11:38
+     */
+    public static function cvsPuts($Excels)
+    {
+        $headers = [];
+        $specHeaders = [];
+        $fileName = '';
+        $isFirst = false;
+        $fontType = 'gbk//IGNORE';
+        $Excel = $Excels[0];
+        $fontType = 'gbk//IGNORE';
+        foreach ($Excel['xlsCell'] as $key => $value) {
+			$headers[$value[0]] = $value[1];
+			// $headers[$value[0]] = mb_convert_encoding($value[1], $fontType, 'utf-8');
+		}
+        $data = $Excel['expTableData'];
+        //终端导出无需header头
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $Excel['fileName'] . '.csv"');
+        header('Cache-Control: max-age=0');
+        $fp = fopen('php://output', 'a');
+        fputcsv($fp, $headers);//输出表头
+        foreach ($data as $key2 => $value2) {
+            $row = $value2;
+            $ret = [];
+            foreach ($headers as $key => $value) {
+                if (!empty($specHeaders) && in_array($key, $specHeaders)) {
+                    $ret[$key] = mb_convert_encoding($row[$key], $fontType, 'utf-8') . "t";
+                } else {
+                    $ret[$key] = $row[$key];
+                    // $ret[$key] = mb_convert_encoding($row[$key], $fontType, 'utf-8');
+                }
+            }
+            fputcsv($fp, $ret);
+        }
+        unset($data);
+        unset($ret);
+        fclose($fp);
+        exit;
+    }
 }
