@@ -109,6 +109,12 @@ exit('暂无数据导出');
 
 ![合并导出](https://cdn.fe80.cn/uploads/long/31199_mergecell.png)
 
+## 数据库结构导出
+
+```php
+echo \linzening\devtools\Structure6::all_tables('system','markdown','','',2);
+```
+
 ## 模板使用说明
 
 ```php
