@@ -1,5 +1,12 @@
 #### PHP开发工具集 version 1.2.0
 
+> 请看使用方法
+
+```
+composer require linzening/devtools
+git@github.com:linzening/devtools.git
+```
+
 * Request类
 * Spread类
 * Lock进程锁
