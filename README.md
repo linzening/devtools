@@ -1,9 +1,10 @@
-#### PHP开发工具集 version 1.1.8
+#### PHP开发工具集 version 1.2.0
 
 * Request类
 * Spread类
 * Lock进程锁
 * 数据库结构
+* 获取复杂的IP地址
 
 
 ```php
@@ -17,7 +18,7 @@ $lock->unlock(); //解锁
 
 #### composer使用方法
 
-* git tag v1.1.8 #新建tag
+* git tag v1.2.0 #新建tag
 * git push --tag #推送tag
 
 > composer地址：
@@ -97,17 +98,20 @@ $Excel['expTableData'] = $list0;
 $Excels[] = $Excel;
 
 if($Excels){
+    // 导出复杂的Excel
     \linzening\devtools\Spread::excelPuts($Excels);
 }
 exit('暂无数据导出');
 
-// 精简导出
+// 导出精简的Excel
 \linzening\devtools\Spread::excelPuts($list);
+// 导出CVS文件
+\linzening\devtools\Spread::cvsPuts($list);
 ```
 
 + 导出格式预览
 
-![合并导出](https://cdn.fe80.cn/uploads/long/31199_mergecell.png)
+![合并导出](https://cdn.fe80.cn/uploads/2024/472344_excel-put.png)
 
 ## 数据库结构导出
 
@@ -123,4 +127,11 @@ public function html($page='deny'){
     // $page in deny,deving,holiday,notice,starting,temporary,upgrade-browser
     return \linzening\devtools\Template::template($page);
 }
+```
+
+## 获取复杂的IP地址
+
+```php
+$r = new \linzening\devtools\Request();
+$ip = $r->get_client_ip(0,true,'HTTP_X_FORWARDED_FOR');
 ```

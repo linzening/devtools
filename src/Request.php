@@ -100,4 +100,59 @@ class Request
 		}
 		return $data;
 	}
+
+	/**
+	 * [get_client_ip 获取用户IP（ThinkPHP自带的函数有问题，所以自己写一个）20240622]
+	 * @access public
+	 * @param  integer   $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
+	 * @param  boolean   $adv 是否进行高级模式获取（有可能被伪装）
+	 * @param  string    $httpAgentIpHeader 获取代理IP的头部
+	 * @return [string]      [获取到的IP地址]
+	 */
+	public function get_client_ip($type = 0, $adv = true,$httpAgentIpHeader = ''){
+		$type      = $type ? 1 : 0;
+		static $ip = null;
+
+		if (null !== $ip) {
+			return $ip[$type];
+		}
+
+		$httpAgentIp = $httpAgentIpHeader ?: config('app.http_agent_ip');
+		
+		$server = $_SERVER;
+	
+		if ($adv) {
+			if ($httpAgentIp && isset($server[$httpAgentIp])) {
+				$ip = $server[$httpAgentIp];
+			}elseif (isset($server['HTTP_X_FORWARDED_FOR'])) {
+				$arr = explode(',', $server['HTTP_X_FORWARDED_FOR']);
+				$pos = array_search('unknown', $arr);
+				if (false !== $pos) {
+					unset($arr[$pos]);
+				}
+				$ip = trim(current($arr));
+			} elseif (isset($server['HTTP_CLIENT_IP'])) {
+				$ip = $server['HTTP_CLIENT_IP'];
+			} elseif (isset($server['REMOTE_ADDR'])) {
+				$ip = $server['REMOTE_ADDR'];
+			}
+		} elseif (isset($server['REMOTE_ADDR'])) {
+			$ip = $server['REMOTE_ADDR'];
+		}
+
+		// IP地址类型
+		$ip_mode = (strpos($ip, ':') === false) ? 'ipv4' : 'ipv6';
+
+		// IP地址合法验证
+		if (filter_var($ip, FILTER_VALIDATE_IP) !== $ip) {
+			$ip = ('ipv4' === $ip_mode) ? '0.0.0.0' : '::';
+		}
+
+		// 如果是ipv4地址，则直接使用ip2long返回int类型ip；如果是ipv6地址，暂时不支持，直接返回0
+		$long_ip = ('ipv4' === $ip_mode) ? sprintf("%u", ip2long($ip)) : 0;
+
+		$ip = [$ip, $long_ip];
+
+		return $ip[$type];
+	}
 }
